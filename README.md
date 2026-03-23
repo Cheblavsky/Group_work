@@ -49,8 +49,10 @@ Each save creates a timestamped backup in `vs/backups/`.
 
 ## How to open the app in the browser
 Open the server URL shown in the terminal, typically:
-- `http://127.0.0.1:8000/vs/index.html`
-- `http://127.0.0.1:8001/vs/index.html` if you changed the port
+- `http://127.0.0.1:8000/index.html`
+- `http://127.0.0.1:8000/datasets.html`
+- `http://127.0.0.1:8000/admin.html`
+- `http://127.0.0.1:8001/index.html` if you changed the port
 
 You can navigate between pages from the shared header.
 
