@@ -11,7 +11,6 @@
   const dashboardIntro = document.getElementById("dashboard-intro");
   const dashboardSummaryNote = document.getElementById("dashboard-summary-note");
   const dashboardWarning = document.getElementById("dashboard-warning");
-  const layerCatalogList = document.getElementById("layer-catalog-list");
 
   const metaSummary = Common.renderHeader({ containerId: "app-header", activePage: "dashboard", metaId: "meta-summary" });
 
@@ -50,27 +49,6 @@
     dashboardIntro.textContent = Common.getAppContentValue(contentState.appContent, "dashboard", "intro");
     dashboardSummaryNote.textContent = Common.getAppContentValue(contentState.appContent, "dashboard", "summary");
     showFallbackWarning();
-    renderLayerCatalogList();
-  }
-
-  function renderLayerCatalogList() {
-    const entries = Common.sortLayersByCatalog(contentState.layerCatalog.layers || [], contentState.layerCatalog)
-      .filter((entry) => {
-        if (!entry || typeof entry !== "object" || !entry.id) {
-          console.warn("Skipping invalid layer catalog entry:", entry);
-          return false;
-        }
-        return entry.kind !== "base";
-      });
-    layerCatalogList.innerHTML = entries.map((entry) => {
-      const display = getLayerDisplay(entry.id, contentState.layerCatalog, entry.id);
-      return `
-        <div class="layer-catalog-item">
-          <h4>${display.title || entry.id}</h4>
-          <p>${display.summary || I18N.t("messages.noLayerSummary")}</p>
-        </div>
-      `;
-    }).join("");
   }
 
   function loadScript(src) {
@@ -393,3 +371,5 @@
 
   init();
 }());
+
+

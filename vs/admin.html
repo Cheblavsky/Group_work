@@ -20,7 +20,33 @@
         <p class="page-copy" data-i18n="admin.subtitle"></p>
       </section>
 
-      <section class="page-main admin-grid">
+      <section id="admin-toolbar" class="page-main admin-toolbar hidden">
+        <div class="admin-toolbar-copy">
+          <div class="admin-toolbar-title">
+            <span data-i18n="admin.editingLanguage"></span>:
+            <strong id="admin-editor-language-value"></strong>
+          </div>
+          <div id="admin-auth-note" class="admin-toolbar-note"></div>
+        </div>
+        <button id="admin-logout" type="button" class="button button-secondary hidden" data-i18n="admin.logout"></button>
+      </section>
+
+      <section id="admin-auth-panel" class="page-main admin-auth-panel hidden">
+        <div class="panel-title" data-i18n="admin.loginTitle"></div>
+        <p class="page-copy" data-i18n="admin.loginSubtitle"></p>
+        <form id="admin-login-form" class="admin-form admin-login-form">
+          <label>
+            <span data-i18n="admin.passwordLabel"></span>
+            <input id="admin-password" type="password" autocomplete="current-password" />
+          </label>
+          <div class="admin-actions">
+            <button id="admin-login-button" type="submit" class="button" data-i18n="admin.loginButton"></button>
+          </div>
+          <div id="admin-auth-status" class="status-message"></div>
+        </form>
+      </section>
+
+      <section id="admin-content" class="page-main admin-grid hidden">
         <section class="admin-section">
           <div class="panel-title" data-i18n="admin.overviewTitle"></div>
           <div id="admin-overview-text" class="feedback-note"></div>
@@ -32,9 +58,9 @@
           <div class="admin-section-head">
             <div class="panel-title" data-i18n="admin.monitoringTitle"></div>
             <div class="admin-actions">
-              <button id="points-reload" class="button button-secondary" data-i18n="admin.reload"></button>
+              <button id="points-reload" class="button button-secondary" data-i18n="admin.reloadPoints"></button>
               <button id="point-add" class="button button-secondary" data-i18n="admin.addPoint"></button>
-              <button id="point-delete" class="button button-danger" data-i18n="admin.deletePoint"></button>
+              <button id="point-delete" class="button button-danger" data-i18n="admin.deleteSelectedPoint"></button>
             </div>
           </div>
           <div class="admin-editor-grid">
@@ -47,7 +73,7 @@
               </div>
               <div id="point-localized-fields"></div>
               <div class="admin-actions">
-                <button id="points-save" type="submit" class="button" data-i18n="admin.savePoints"></button>
+                <button id="points-save" type="submit" class="button" data-i18n="admin.savePointChanges"></button>
               </div>
               <div id="points-status" class="status-message"></div>
             </form>
@@ -58,7 +84,7 @@
           <div class="admin-section-head">
             <div class="panel-title" data-i18n="admin.datasetTitle"></div>
             <div class="admin-actions">
-              <button id="datasets-reload" class="button button-secondary" data-i18n="admin.reload"></button>
+              <button id="datasets-reload" class="button button-secondary" data-i18n="admin.reloadDatasets"></button>
             </div>
           </div>
           <div class="admin-editor-grid">
@@ -78,7 +104,7 @@
           <div class="admin-section-head">
             <div class="panel-title" data-i18n="admin.pageTitle"></div>
             <div class="admin-actions">
-              <button id="app-reload" class="button button-secondary" data-i18n="admin.reload"></button>
+              <button id="app-reload" class="button button-secondary" data-i18n="admin.reloadPageContent"></button>
             </div>
           </div>
           <form id="app-content-form" class="admin-form">

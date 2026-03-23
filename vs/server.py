@@ -14,6 +14,7 @@ from PIL import Image
 from rasterio.enums import Resampling
 
 PORT = int(os.environ.get("PORT", "8000"))
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "").strip()
 ROOT = Path(__file__).resolve().parent
 TIF_DIR = ROOT / "TIF"
 CONFIG_DIR = ROOT / "config"
@@ -280,6 +281,17 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def _is_admin_authorized(self):
+        if not ADMIN_PASSWORD:
+            return True
+        return self.headers.get("X-Admin-Password", "") == ADMIN_PASSWORD
+
+    def _require_admin_auth(self):
+        if self._is_admin_authorized():
+            return True
+        self._send_json(401, {"ok": False, "error": "Admin login required.", "auth_required": True})
+        return False
+
     def _config_name_from_path(self, parsed_path):
         parts = [part for part in parsed_path.split("/") if part]
         if len(parts) != 3 or parts[0] != "api" or parts[1] != "config":
@@ -304,7 +316,13 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         elif parsed.path.startswith("/vs/TIF/"):
             tif_prefix = "/vs/TIF/"
 
+        if parsed.path == "/api/admin/auth-status":
+            self._send_json(200, _json_ok(auth_required=bool(ADMIN_PASSWORD)))
+            return
+
         if parsed.path == "/api/admin/health":
+            if not self._require_admin_auth():
+                return
             self._send_json(200, _json_ok(status="ok", config_dir=str(CONFIG_DIR), backup_dir=str(BACKUP_DIR), available_configs=sorted(CONFIG_PATHS.keys()), server_time=datetime.now().isoformat(timespec="seconds")))
             return
 
@@ -371,13 +389,33 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self._handle_config_write()
 
     def do_POST(self):
+        parsed = urlparse(self.path)
+        if parsed.path == "/api/admin/login":
+            self._handle_admin_login()
+            return
         self._handle_config_write()
+
+    def _handle_admin_login(self):
+        if not ADMIN_PASSWORD:
+            self._send_json(200, _json_ok(auth_required=False, authenticated=True))
+            return
+        try:
+            payload = self._load_request_json()
+        except ValueError as exc:
+            self._send_json(400, _json_error(str(exc)))
+            return
+        if payload.get("password") != ADMIN_PASSWORD:
+            self._send_json(401, {"ok": False, "error": "Incorrect admin password.", "auth_required": True})
+            return
+        self._send_json(200, _json_ok(auth_required=True, authenticated=True))
 
     def _handle_config_write(self):
         parsed = urlparse(self.path)
         config_name = self._config_name_from_path(parsed.path)
         if not config_name:
             self._send_json(404, _json_error("Unknown config endpoint"))
+            return
+        if not self._require_admin_auth():
             return
         try:
             payload = self._load_request_json()
