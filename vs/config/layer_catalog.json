@@ -1,0 +1,326 @@
+{
+  "layers": [
+    {
+      "id": "esa-worldcover",
+      "kind": "raster",
+      "title": {
+        "en": "ESA WorldCover (2024)",
+        "zh": "ESA WorldCover (2024)",
+        "hu": "ESA WorldCover (2024)",
+        "ku": "ESA WorldCover (2024)"
+      },
+      "summary": {
+        "en": "Land-cover classification layer for comparing vegetation, cropland, built surfaces, and water classes.",
+        "zh": "用于比较植被、耕地、建设用地和水体类别的土地覆盖分类图层。",
+        "hu": "Felszínborítási osztályozó réteg a növényzet, a szántóföldek, a beépített felszínek és a vízfelületek összehasonlításához.",
+        "ku": "لایەی پۆلکردنی داپۆشینی زەوی بۆ بەراوردی ڕووەک و کشتوکاڵ و بناکراو و پۆلەکانی ئاو."
+      },
+      "defaultVisible": true,
+      "showInLegend": true,
+      "showInActiveLayers": true,
+      "sortOrder": 10,
+      "legend": {
+        "title": {
+          "en": "WorldCover classes",
+          "zh": "WorldCover 类别",
+          "hu": "WorldCover osztályok",
+          "ku": "پۆلەکانی WorldCover"
+        },
+        "items": [
+          {
+            "id": "tree",
+            "label": {
+              "en": "Tree cover",
+              "zh": "树木覆盖",
+              "hu": "Faborítás",
+              "ku": "داپۆشینی دار"
+            }
+          },
+          {
+            "id": "shrub",
+            "label": {
+              "en": "Shrubland",
+              "zh": "灌木地",
+              "hu": "Cserjés",
+              "ku": "دارچە"
+            }
+          },
+          {
+            "id": "grass",
+            "label": {
+              "en": "Grassland",
+              "zh": "草地",
+              "hu": "Gyep",
+              "ku": "گیا"
+            }
+          },
+          {
+            "id": "crop",
+            "label": {
+              "en": "Cropland",
+              "zh": "耕地",
+              "hu": "Szántóföld",
+              "ku": "کشتوکاڵ"
+            }
+          },
+          {
+            "id": "built",
+            "label": {
+              "en": "Built-up",
+              "zh": "建设用地",
+              "hu": "Beépített",
+              "ku": "بناکراو"
+            }
+          },
+          {
+            "id": "bare",
+            "label": {
+              "en": "Bare / sparse",
+              "zh": "裸地 / 稀疏植被",
+              "hu": "Kopár / ritkás",
+              "ku": "ڕووت / کەم گیایی"
+            }
+          },
+          {
+            "id": "water",
+            "label": {
+              "en": "Permanent water",
+              "zh": "永久水体",
+              "hu": "Állandó víz",
+              "ku": "ئاوە هەمیشەییەکان"
+            }
+          },
+          {
+            "id": "wetland",
+            "label": {
+              "en": "Herbaceous wetland",
+              "zh": "草本湿地",
+              "hu": "Lágy szárú vizes élőhely",
+              "ku": "ناوچەی تەڕی گیاوی"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "srtm-dem",
+      "kind": "raster",
+      "title": {
+        "en": "SRTM Elevation",
+        "zh": "SRTM 高程",
+        "hu": "SRTM domborzat",
+        "ku": "SRTM بەرزی"
+      },
+      "summary": {
+        "en": "Elevation layer highlighting terrain variation across the study area.",
+        "zh": "突出显示研究区地形变化的高程图层。",
+        "hu": "Magassági réteg, amely kiemeli a vizsgálati terület domborzati változásait.",
+        "ku": "لایەی بەرزی کە گۆڕانی ئاستی زەوی لە ناوچەی توێژینەوە دەخاتە ڕوو."
+      },
+      "defaultVisible": false,
+      "showInLegend": true,
+      "showInActiveLayers": true,
+      "sortOrder": 20,
+      "legend": {
+        "title": {
+          "en": "Elevation (m)",
+          "zh": "高程 (m)",
+          "hu": "Magasság (m)",
+          "ku": "بەرزی (m)"
+        }
+      }
+    },
+    {
+      "id": "jrc-water",
+      "kind": "raster",
+      "title": {
+        "en": "JRC Surface Water Occurrence",
+        "zh": "JRC 地表水出现频率",
+        "hu": "JRC felszíni víz előfordulás",
+        "ku": "JRC بوونی ئاو لەسەر زەوی"
+      },
+      "summary": {
+        "en": "Surface-water occurrence layer showing rare, seasonal, and persistent water patterns.",
+        "zh": "显示罕见、季节性和持续性水体模式的地表水出现图层。",
+        "hu": "Felszíni víz előfordulási réteg, amely ritka, szezonális és tartós vízborítási mintázatokat mutat.",
+        "ku": "لایەی بوونی ئاو لەسەر زەوی کە نەخشەی ئاوی کەم و وەرزی و بەردەوام پیشان دەدات."
+      },
+      "defaultVisible": false,
+      "showInLegend": true,
+      "showInActiveLayers": true,
+      "sortOrder": 30,
+      "legend": {
+        "title": {
+          "en": "Water occurrence (%)",
+          "zh": "水体出现率 (%)",
+          "hu": "Víz előfordulás (%)",
+          "ku": "بوونی ئاو (%)"
+        },
+        "items": [
+          {
+            "id": "rare",
+            "label": {
+              "en": "Rare",
+              "zh": "罕见",
+              "hu": "Ritka",
+              "ku": "کەم"
+            }
+          },
+          {
+            "id": "seasonal",
+            "label": {
+              "en": "Seasonal",
+              "zh": "季节性",
+              "hu": "Szezonális",
+              "ku": "وەرزی"
+            }
+          },
+          {
+            "id": "permanent",
+            "label": {
+              "en": "Permanent",
+              "zh": "常年",
+              "hu": "Állandó",
+              "ku": "هەمیشەیی"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "sentinel-2",
+      "kind": "raster",
+      "title": {
+        "en": "Sentinel-2 RGB",
+        "zh": "Sentinel-2 RGB",
+        "hu": "Sentinel-2 RGB",
+        "ku": "Sentinel-2 RGB"
+      },
+      "summary": {
+        "en": "Multiband optical imagery for quick visual comparison of vegetation, built-up areas, and water.",
+        "zh": "用于快速比较植被、建成区和水体的多波段光学影像。",
+        "hu": "Többcsatornás optikai felvétel a növényzet, a beépített területek és a vízfelületek gyors vizuális összehasonlításához.",
+        "ku": "وێنەی ئۆپتیکی فرە-باند بۆ بەراوردی خێرای ڕووەک و بناکراو و ئاو."
+      },
+      "defaultVisible": false,
+      "showInLegend": true,
+      "showInActiveLayers": true,
+      "sortOrder": 40,
+      "legend": {
+        "title": {
+          "en": "Sentinel-2",
+          "zh": "Sentinel-2",
+          "hu": "Sentinel-2",
+          "ku": "Sentinel-2"
+        },
+        "items": [
+          {
+            "id": "rgb",
+            "label": {
+              "en": "RGB composite",
+              "zh": "RGB 合成",
+              "hu": "RGB kompozit",
+              "ku": "کۆمپۆزیتی RGB"
+            }
+          },
+          {
+            "id": "vegetation",
+            "label": {
+              "en": "Vegetation",
+              "zh": "植被",
+              "hu": "Növényzet",
+              "ku": "ڕووەک"
+            }
+          },
+          {
+            "id": "built",
+            "label": {
+              "en": "Built-up",
+              "zh": "建设用地",
+              "hu": "Beépített",
+              "ku": "بناکراو"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "study-boundary",
+      "kind": "vector",
+      "title": {
+        "en": "Study Boundary",
+        "zh": "研究边界",
+        "hu": "Vizsgálati határ",
+        "ku": "سنوری ناوچەی توێژینەوە"
+      },
+      "summary": {
+        "en": "Boundary layer that frames the study extent used by the dashboard.",
+        "zh": "用于界定仪表板研究范围的边界图层。",
+        "hu": "Határréteg, amely kijelöli a dashboard által használt vizsgálati kiterjedést.",
+        "ku": "لایەی سنور کە سنوری ناوچەی توێژینەوەی داشبۆرد دیاری دەکات."
+      },
+      "defaultVisible": true,
+      "showInLegend": true,
+      "showInActiveLayers": true,
+      "sortOrder": 50,
+      "legend": {
+        "title": {
+          "en": "Boundary",
+          "zh": "边界",
+          "hu": "Határ",
+          "ku": "سنور"
+        },
+        "items": [
+          {
+            "id": "clip-extent",
+            "label": {
+              "en": "Clip extent",
+              "zh": "裁剪范围",
+              "hu": "Kivágás területe",
+              "ku": "ڕووبەری بڕاو"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "monitoring-points",
+      "kind": "points",
+      "title": {
+        "en": "Monitoring Points",
+        "zh": "监测点",
+        "hu": "Monitoring pontok",
+        "ku": "خاڵەکانی چاودێری"
+      },
+      "summary": {
+        "en": "Reference observation points for local environmental monitoring.",
+        "zh": "本地环境监测的参考观测点。",
+        "hu": "Referencia megfigyelési pontok helyi környezeti monitorozáshoz.",
+        "ku": "خاڵی سەرچاوە بۆ چاودێری ژینگه یی ناوخۆیی."
+      },
+      "defaultVisible": true,
+      "showInLegend": true,
+      "showInActiveLayers": true,
+      "sortOrder": 60,
+      "legend": {
+        "title": {
+          "en": "Monitoring points",
+          "zh": "监测点",
+          "hu": "Monitoring pontok",
+          "ku": "خاڵەکانی چاودێری"
+        },
+        "items": [
+          {
+            "id": "sensor",
+            "label": {
+              "en": "Sensors",
+              "zh": "传感器",
+              "hu": "Szenzorok",
+              "ku": "سێنسەر"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

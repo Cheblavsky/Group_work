@@ -1,0 +1,130 @@
+{
+  "datasets": [
+    {
+      "id": "esa-worldcover",
+      "title": {
+        "en": "ESA WorldCover (2024)",
+        "zh": "ESA WorldCover (2024)",
+        "hu": "ESA WorldCover (2024)",
+        "ku": "ESA WorldCover (2024)"
+      },
+      "summary": {
+        "en": "Categorical land-cover raster used to compare vegetation, cropland, built surfaces, and water classes.",
+        "zh": "用于对比植被、耕地、建设用地和水体类别的土地覆盖分类栅格。",
+        "hu": "Kategóriákra bontott felszínborítási raszter a növényzet, a szántóföldek, a beépített felszínek és a vízfelületek összehasonlításához.",
+        "ku": "ڕاستەری پۆلکراوی داپۆشینی زەوی بۆ بەراوردی ڕووەک و کشتوکاڵ و بناکراو و پۆلەکانی ئاو."
+      },
+      "tags": {
+        "en": ["Raster", "Land cover"],
+        "zh": ["栅格", "土地覆盖"],
+        "hu": ["Raszter", "Felszínborítás"],
+        "ku": ["ڕاستەر", "داپۆشینی زەوی"]
+      }
+    },
+    {
+      "id": "srtm-dem",
+      "title": {
+        "en": "SRTM Elevation",
+        "zh": "SRTM 高程",
+        "hu": "SRTM domborzat",
+        "ku": "SRTM بەرزی"
+      },
+      "summary": {
+        "en": "Digital elevation model highlighting local terrain variation across the study area.",
+        "zh": "显示研究区局部地形变化的数字高程模型。",
+        "hu": "Digitális domborzatmodell, amely kiemeli a vizsgálati terület helyi terepváltozásait.",
+        "ku": "مۆدێلی دیجیتاڵی بەرزی کە گۆڕانی ئاستی زەوی لە ناوچەی توێژینەوە دیار دەکات."
+      },
+      "tags": {
+        "en": ["Raster", "Elevation"],
+        "zh": ["栅格", "高程"],
+        "hu": ["Raszter", "Magasság"],
+        "ku": ["ڕاستەر", "بەرزی"]
+      }
+    },
+    {
+      "id": "jrc-water",
+      "title": {
+        "en": "JRC Surface Water Occurrence",
+        "zh": "JRC 地表水出现频率",
+        "hu": "JRC felszíni víz előfordulás",
+        "ku": "JRC بوونی ئاو لەسەر زەوی"
+      },
+      "summary": {
+        "en": "Water occurrence raster showing where surface water appears rarely, seasonally, or persistently.",
+        "zh": "显示地表水罕见、季节性或常年出现位置的水体频率栅格。",
+        "hu": "Felszíni víz előfordulási raszter, amely megmutatja, hol jelenik meg az állóvíz ritkán, szezonálisan vagy tartósan.",
+        "ku": "ڕاستەری بوونی ئاو کە شوێنی ئاوە کەم و وەرزی و هەمیشەییەکان پیشان دەدات."
+      },
+      "tags": {
+        "en": ["Raster", "Water"],
+        "zh": ["栅格", "水体"],
+        "hu": ["Raszter", "Víz"],
+        "ku": ["ڕاستەر", "ئاو"]
+      }
+    },
+    {
+      "id": "sentinel-2",
+      "title": {
+        "en": "Sentinel-2 RGB",
+        "zh": "Sentinel-2 RGB",
+        "hu": "Sentinel-2 RGB",
+        "ku": "Sentinel-2 RGB"
+      },
+      "summary": {
+        "en": "Multiband optical imagery used for a quick visual comparison of vegetation, built-up areas, and water.",
+        "zh": "用于快速对比植被、建成区和水体的多波段光学影像。",
+        "hu": "Többcsatornás optikai felvétel a növényzet, a beépített területek és a vizek gyors vizuális összehasonlításához.",
+        "ku": "وێنەی ئۆپتیکی فرە-باند بۆ بەراوردی خێرای ڕووەک و بناکراو و ئاو."
+      },
+      "tags": {
+        "en": ["Raster", "Satellite"],
+        "zh": ["栅格", "卫星"],
+        "hu": ["Raszter", "Műhold"],
+        "ku": ["ڕاستەر", "مانگ دەست"]
+      }
+    },
+    {
+      "id": "study-boundary",
+      "title": {
+        "en": "Study Boundary",
+        "zh": "研究边界",
+        "hu": "Vizsgálati határ",
+        "ku": "سنوری ناوچەی توێژینەوە"
+      },
+      "summary": {
+        "en": "Vector boundary that frames the study extent used by the dashboard.",
+        "zh": "用于界定仪表板研究范围的矢量边界。",
+        "hu": "A dashboard által használt vizsgálati kiterjedést kijelölő vektorhatár.",
+        "ku": "سنوری ڤێکتەری کە سنوری ناوچەی توێژینەوە دیاری دەکات."
+      },
+      "tags": {
+        "en": ["Vector", "Boundary"],
+        "zh": ["矢量", "边界"],
+        "hu": ["Vektor", "Határ"],
+        "ku": ["ڤێکتەر", "سنور"]
+      }
+    },
+    {
+      "id": "monitoring-points",
+      "title": {
+        "en": "Monitoring Points",
+        "zh": "监测点",
+        "hu": "Monitoring pontok",
+        "ku": "خاڵەکانی چاودێری"
+      },
+      "summary": {
+        "en": "Reference observation locations for local environmental monitoring.",
+        "zh": "本地环境监测的参考观测位置。",
+        "hu": "Referencia megfigyelési helyek helyi környezeti monitorozáshoz.",
+        "ku": "شوێنی چاودێری سەرچاوە بۆ چاودێری ژینگه یی ناوخۆیی."
+      },
+      "tags": {
+        "en": ["Point", "Monitoring"],
+        "zh": ["点", "监测"],
+        "hu": ["Pont", "Monitorozás"],
+        "ku": ["خاڵ", "چاودێری"]
+      }
+    }
+  ]
+}

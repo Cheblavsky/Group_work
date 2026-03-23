@@ -1,0 +1,36 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Geo Environmental Dataset Catalog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app app-page">
+    <header class="app-header" id="app-header"></header>
+
+    <div class="page-shell">
+      <section class="page-hero">
+        <div class="page-kicker" data-i18n="datasets.kicker"></div>
+        <h1 class="page-title" data-i18n="datasets.title"></h1>
+        <p class="page-copy" id="datasets-intro"></p>
+      </section>
+
+      <section class="page-main">
+        <div class="panel-title" data-i18n="datasets.panelTitle"></div>
+        <div id="datasets-warning" class="feedback-note hidden"></div>
+        <div id="datasets-feedback" class="feedback-note"></div>
+        <div id="datasets-content" class="catalog-grid"></div>
+      </section>
+    </div>
+  </div>
+
+  <script src="i18n.js"></script>
+  <script src="app-common.js"></script>
+  <script src="datasets.js"></script>
+</body>
+</html>

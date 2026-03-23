@@ -1,0 +1,38 @@
+{
+  "dashboard": {
+    "intro": {
+      "en": "Use the dashboard to compare active raster, vector, and point layers without leaving the map view.",
+      "zh": "使用仪表板可在不离开地图视图的情况下比较活动的栅格、矢量和点图层。",
+      "hu": "A dashboarddal ugy hasonlithatod ossze az aktiv raster, vektor es pont retegeket, hogy kozben a terkepen maradsz.",
+      "ku": "لە داشبۆرددا دەتوانیت ڕاستەر و ڤێکتەر و خاڵە چالاکەکان بەراورد بکەیت بەبێ جێهێشتنی نەخشە."
+    },
+    "summary": {
+      "en": "Editable content now comes from local JSON config files, so non-developers can update key texts and points from the admin page.",
+      "zh": "可编辑内容现在来自本地 JSON 配置文件，因此非开发人员也可以从管理页更新关键文本和监测点。",
+      "hu": "A szerkesztheto tartalom most helyi JSON konfiguraciobol jon, igy a nem fejlesztok is frissithetik a kulcs szovegeket es pontokat az admin oldalon.",
+      "ku": "ناوەڕۆکی دەستکاریکراو ئێستا لە فایلی JSON دێت، بۆیە نا-پەرەپێدەرانیش دەتوانن دەق و خاڵەکان لە پەڕەی ئادمین نوێ بکەنەوە."
+    }
+  },
+  "datasets": {
+    "intro": {
+      "en": "Browse editable dataset descriptions here while technical metadata remains tied to the existing Markdown reports.",
+      "zh": "在这里浏览可编辑的数据集说明，同时技术元数据仍然来自现有 Markdown 报告。",
+      "hu": "Itt bongeszheted a szerkesztheto adatleirasokat, mikozben a technikai metaadatok tovabbra is a meglevo Markdown riportokbol jonnek.",
+      "ku": "لێرە پێناساندنی داتاسێت ببینە، هەروەها میتاداتای تەکنیکی هێشتا لە راپۆرتەکانی Markdown دێت."
+    }
+  },
+  "admin": {
+    "overview": {
+      "en": "This local-development admin page lets non-developers maintain monitoring points and localized content without editing source code.",
+      "zh": "这个本地开发管理页允许非开发人员在不修改源代码的情况下维护监测点和多语言内容。",
+      "hu": "Ez a helyi fejlesztesi admin oldal lehetove teszi, hogy nem fejlesztok is karbantartsak a monitoring pontokat es a lokalizalt tartalmat forraskod szerkesztese nelkul.",
+      "ku": "ئەم پەڕەی ئادمینی پەرەپێدانە ناوخۆییە ڕێگا دەدات نا-پەرەپێدەرەکان خاڵەکانی چاودێری و ناوەڕۆکی فرەزمانی نوێ بکەنەوە بەبێ دەستکاریکردنی کۆد."
+    },
+    "notice": {
+      "en": "No authentication is enabled in this step. Treat this as a local-development admin tool only.",
+      "zh": "本步骤未启用身份验证。请仅将其视为本地开发管理工具。",
+      "hu": "Ebben a lepesben nincs hitelesites. Ezt csak helyi fejlesztesi admin eszkozkent kezeld.",
+      "ku": "لە ئەم هەنگاوەدا هیچ پشتڕاستکردنەوەی ناسنامەیەک نییە. تەنیا وەک ئامرازێکی ئادمینی پەرەپێدانی ناوخۆ بەکاردەهێنرێت."
+    }
+  }
+}

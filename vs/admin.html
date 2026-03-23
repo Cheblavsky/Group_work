@@ -1,0 +1,128 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Geo Environmental Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app app-page">
+    <header class="app-header" id="app-header"></header>
+
+    <div class="page-shell">
+      <section class="page-hero">
+        <div class="page-kicker" data-i18n="admin.kicker"></div>
+        <h1 class="page-title" data-i18n="admin.title"></h1>
+        <p class="page-copy" data-i18n="admin.subtitle"></p>
+      </section>
+
+      <section class="page-main admin-grid">
+        <section class="admin-section">
+          <div class="panel-title" data-i18n="admin.overviewTitle"></div>
+          <div id="admin-overview-text" class="feedback-note"></div>
+          <div id="admin-notice-text" class="feedback-note warning-note"></div>
+          <div id="admin-health" class="status-grid"></div>
+        </section>
+
+        <section class="admin-section">
+          <div class="admin-section-head">
+            <div class="panel-title" data-i18n="admin.monitoringTitle"></div>
+            <div class="admin-actions">
+              <button id="points-reload" class="button button-secondary" data-i18n="admin.reload"></button>
+              <button id="point-add" class="button button-secondary" data-i18n="admin.addPoint"></button>
+              <button id="point-delete" class="button button-danger" data-i18n="admin.deletePoint"></button>
+            </div>
+          </div>
+          <div class="admin-editor-grid">
+            <div id="points-list" class="admin-list"></div>
+            <form id="points-form" class="admin-form">
+              <label><span data-i18n="admin.pointId"></span><input id="point-id" type="text" /></label>
+              <div class="admin-form-row">
+                <label><span data-i18n="admin.latitude"></span><input id="point-lat" type="number" step="any" /></label>
+                <label><span data-i18n="admin.longitude"></span><input id="point-lng" type="number" step="any" /></label>
+              </div>
+              <div id="point-localized-fields"></div>
+              <div class="admin-actions">
+                <button id="points-save" type="submit" class="button" data-i18n="admin.savePoints"></button>
+              </div>
+              <div id="points-status" class="status-message"></div>
+            </form>
+          </div>
+        </section>
+
+        <section class="admin-section">
+          <div class="admin-section-head">
+            <div class="panel-title" data-i18n="admin.datasetTitle"></div>
+            <div class="admin-actions">
+              <button id="datasets-reload" class="button button-secondary" data-i18n="admin.reload"></button>
+            </div>
+          </div>
+          <div class="admin-editor-grid">
+            <div id="dataset-list" class="admin-list"></div>
+            <form id="dataset-form" class="admin-form">
+              <label><span data-i18n="admin.datasetId"></span><input id="dataset-id" type="text" readonly /></label>
+              <div id="dataset-localized-fields"></div>
+              <div class="admin-actions">
+                <button id="datasets-save" type="submit" class="button" data-i18n="admin.saveDatasets"></button>
+              </div>
+              <div id="datasets-status" class="status-message"></div>
+            </form>
+          </div>
+        </section>
+
+        <section class="admin-section">
+          <div class="admin-section-head">
+            <div class="panel-title" data-i18n="admin.pageTitle"></div>
+            <div class="admin-actions">
+              <button id="app-reload" class="button button-secondary" data-i18n="admin.reload"></button>
+            </div>
+          </div>
+          <form id="app-content-form" class="admin-form">
+            <div id="app-content-fields"></div>
+            <div class="admin-actions">
+              <button id="app-save" type="submit" class="button" data-i18n="admin.saveApp"></button>
+            </div>
+            <div id="app-status" class="status-message"></div>
+          </form>
+        </section>
+
+        <section class="admin-section">
+          <div class="admin-section-head">
+            <div class="panel-title" data-i18n="admin.layerCatalogTitle"></div>
+            <div class="admin-actions">
+              <button id="layers-reload" class="button button-secondary" data-i18n="admin.reloadLayers"></button>
+            </div>
+          </div>
+          <div class="admin-editor-grid">
+            <div id="layer-list" class="admin-list"></div>
+            <form id="layer-form" class="admin-form">
+              <label><span data-i18n="admin.layerId"></span><input id="layer-id" type="text" readonly /></label>
+              <label><span data-i18n="admin.layerKind"></span><input id="layer-kind" type="text" readonly /></label>
+              <div id="layer-localized-fields"></div>
+              <div class="admin-form-row admin-toggle-grid">
+                <label><span data-i18n="admin.layerDefaultVisible"></span><input id="layer-default-visible" type="checkbox" /></label>
+                <label><span data-i18n="admin.layerShowLegend"></span><input id="layer-show-legend" type="checkbox" /></label>
+                <label><span data-i18n="admin.layerShowActive"></span><input id="layer-show-active" type="checkbox" /></label>
+                <label><span data-i18n="admin.layerSortOrder"></span><input id="layer-sort-order" type="number" step="1" /></label>
+              </div>
+              <div id="layer-legend-fields"></div>
+              <div class="admin-actions">
+                <button id="layers-save" type="submit" class="button" data-i18n="admin.saveLayers"></button>
+              </div>
+              <div id="layers-status" class="status-message"></div>
+            </form>
+          </div>
+        </section>
+      </section>
+    </div>
+  </div>
+
+  <script src="i18n.js"></script>
+  <script src="app-common.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+{
+  "points": [
+    {
+      "id": "wetland-monitor",
+      "coords": [46.267, 20.112],
+      "name": {
+        "en": "Szeged Wetland Monitor",
+        "zh": "塞格德湿地监测站",
+        "hu": "Szegedi mocsármonitor",
+        "ku": "چاودێری تەڕاوێتی سەگێد"
+      },
+      "note": {
+        "en": "Seasonal water sensor cluster.",
+        "zh": "季节性水体传感器簇。",
+        "hu": "Szezonális vízszenzor-klaszter.",
+        "ku": "کۆمەڵە سێنسەری ئاوی وەرزی."
+      }
+    },
+    {
+      "id": "agricultural-observatory",
+      "coords": [46.305, 20.175],
+      "name": {
+        "en": "Agricultural Observatory",
+        "zh": "农业观测站",
+        "hu": "Mezőgazdasági obszervatórium",
+        "ku": "چاودێری کشتوکاڵ"
+      },
+      "note": {
+        "en": "Crop moisture readings.",
+        "zh": "作物湿度读数。",
+        "hu": "Nedvességmérési adatok a növényállományról.",
+        "ku": "خوێندنەوەی تریی کشتوکاڵ."
+      }
+    },
+    {
+      "id": "urban-heat-station",
+      "coords": [46.283, 20.153],
+      "name": {
+        "en": "Urban Heat Station",
+        "zh": "城市热岛站",
+        "hu": "Városi hőállomás",
+        "ku": "وێستگەی گەرمای شارستانی"
+      },
+      "note": {
+        "en": "Built-up surface temperature.",
+        "zh": "建成区地表温度。",
+        "hu": "Beépített felszínek hőmérséklete.",
+        "ku": "پلەی گەرمی ڕووی زەویی بناکراو."
+      }
+    }
+  ]
+}
