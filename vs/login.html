@@ -1,0 +1,43 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Geo Environmental Admin Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Serif:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app app-page">
+    <header class="app-header" id="app-header"></header>
+
+    <div class="page-shell auth-page-shell">
+      <section class="page-hero">
+        <div class="page-kicker" data-i18n="admin.kicker"></div>
+        <h1 class="page-title" data-i18n="admin.loginTitle"></h1>
+        <p class="page-copy" data-i18n="admin.loginSubtitle"></p>
+      </section>
+
+      <section class="page-main auth-card">
+        <form id="login-form" class="admin-form admin-login-form">
+          <label>
+            <span data-i18n="admin.passwordLabel"></span>
+            <input id="login-password" type="password" autocomplete="current-password" />
+          </label>
+          <div class="admin-actions auth-actions">
+            <button id="login-button" type="submit" class="button" data-i18n="admin.loginButton"></button>
+            <a class="panel-link panel-link-subtle" href="index.html" data-i18n="nav.dashboard"></a>
+          </div>
+          <div id="login-status" class="status-message"></div>
+        </form>
+      </section>
+    </div>
+  </div>
+
+  <script src="i18n.js"></script>
+  <script src="app-common.js"></script>
+  <script src="login.js"></script>
+</body>
+</html>

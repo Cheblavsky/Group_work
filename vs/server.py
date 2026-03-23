@@ -1,12 +1,16 @@
-﻿import http.server
+﻿import hmac
+import http.server
 import io
 import json
 import math
 import os
+import secrets
 import socketserver
+import time
 from datetime import datetime
+from http.cookies import SimpleCookie
 from pathlib import Path
-from urllib.parse import unquote, urlparse
+from urllib.parse import parse_qs, unquote, urlparse
 
 import numpy as np
 import rasterio
@@ -14,7 +18,12 @@ from PIL import Image
 from rasterio.enums import Resampling
 
 PORT = int(os.environ.get("PORT", "8000"))
-ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "").strip()
+RAW_ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "").strip()
+DEFAULT_ADMIN_PASSWORD = "local-admin"
+ADMIN_PASSWORD = RAW_ADMIN_PASSWORD or DEFAULT_ADMIN_PASSWORD
+ADMIN_PASSWORD_SOURCE = "environment" if RAW_ADMIN_PASSWORD else "default"
+SESSION_COOKIE_NAME = "envdash_admin_session"
+SESSION_TTL_SECONDS = int(os.environ.get("ADMIN_SESSION_TTL_SECONDS", "28800"))
 ROOT = Path(__file__).resolve().parent
 TIF_DIR = ROOT / "TIF"
 CONFIG_DIR = ROOT / "config"
@@ -27,6 +36,7 @@ CONFIG_PATHS = {
     "app_content": CONFIG_DIR / "app_content.json",
     "layer_catalog": CONFIG_DIR / "layer_catalog.json",
 }
+SESSIONS = {}
 
 
 def _scale_shape(width, height, max_size=MAX_RENDER_SIZE):
@@ -265,6 +275,38 @@ VALIDATORS = {
 }
 
 
+def _cleanup_sessions():
+    now = time.time()
+    expired_tokens = [token for token, session in SESSIONS.items() if session.get("expires_at", 0) <= now]
+    for token in expired_tokens:
+        SESSIONS.pop(token, None)
+
+
+def _create_session():
+    _cleanup_sessions()
+    token = secrets.token_urlsafe(32)
+    SESSIONS[token] = {"expires_at": time.time() + SESSION_TTL_SECONDS}
+    return token
+
+
+def _clear_session(token):
+    if token:
+        SESSIONS.pop(token, None)
+
+
+def _build_session_cookie(token, max_age):
+    cookie = SimpleCookie()
+    cookie[SESSION_COOKIE_NAME] = token
+    morsel = cookie[SESSION_COOKIE_NAME]
+    morsel["httponly"] = True
+    morsel["path"] = "/"
+    morsel["samesite"] = "Lax"
+    morsel["max-age"] = str(max_age)
+    if max_age <= 0:
+        morsel["expires"] = "Thu, 01 Jan 1970 00:00:00 GMT"
+    return morsel.OutputString()
+
+
 class Handler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(ROOT), **kwargs)
@@ -273,23 +315,51 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self.send_header("Cache-Control", "no-store")
         super().end_headers()
 
-    def _send_json(self, status_code, payload):
+    def _send_json(self, status_code, payload, extra_headers=None):
         body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
         self.send_response(status_code)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
+        for header_name, header_value in (extra_headers or []):
+            self.send_header(header_name, header_value)
         self.end_headers()
         self.wfile.write(body)
 
-    def _is_admin_authorized(self):
-        if not ADMIN_PASSWORD:
-            return True
-        return self.headers.get("X-Admin-Password", "") == ADMIN_PASSWORD
+    def _send_redirect(self, location):
+        self.send_response(302)
+        self.send_header("Location", location)
+        self.end_headers()
+
+    def _parse_request_cookies(self):
+        cookie_header = self.headers.get("Cookie", "")
+        cookie = SimpleCookie()
+        if cookie_header:
+            cookie.load(cookie_header)
+        return cookie
+
+    def _get_session_token(self):
+        cookie = self._parse_request_cookies()
+        morsel = cookie.get(SESSION_COOKIE_NAME)
+        return morsel.value if morsel else ""
+
+    def _is_admin_authenticated(self):
+        _cleanup_sessions()
+        token = self._get_session_token()
+        session = SESSIONS.get(token)
+        if not session:
+            return False
+        session["expires_at"] = time.time() + SESSION_TTL_SECONDS
+        return True
 
     def _require_admin_auth(self):
-        if self._is_admin_authorized():
+        if self._is_admin_authenticated():
             return True
-        self._send_json(401, {"ok": False, "error": "Admin login required.", "auth_required": True})
+        self._send_json(401, {
+            "ok": False,
+            "error": "Admin login required.",
+            "auth_required": True,
+            "authenticated": False,
+        })
         return False
 
     def _config_name_from_path(self, parsed_path):
@@ -308,6 +378,46 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         except json.JSONDecodeError as exc:
             raise ValueError(f"Invalid JSON: {exc.msg}") from exc
 
+    def _handle_auth_status(self):
+        self._send_json(200, _json_ok(
+            auth_required=True,
+            authenticated=self._is_admin_authenticated(),
+            password_source=ADMIN_PASSWORD_SOURCE,
+            using_default_password=ADMIN_PASSWORD_SOURCE == "default",
+            session_ttl_seconds=SESSION_TTL_SECONDS,
+        ))
+
+    def _handle_auth_login(self):
+        try:
+            payload = self._load_request_json()
+        except ValueError as exc:
+            self._send_json(400, _json_error(str(exc)))
+            return
+        password = payload.get("password", "")
+        if not isinstance(password, str) or not hmac.compare_digest(password, ADMIN_PASSWORD):
+            self._send_json(401, {
+                "ok": False,
+                "error": "Incorrect admin password.",
+                "auth_required": True,
+                "authenticated": False,
+            })
+            return
+        token = _create_session()
+        self._send_json(
+            200,
+            _json_ok(auth_required=True, authenticated=True, password_source=ADMIN_PASSWORD_SOURCE),
+            extra_headers=[("Set-Cookie", _build_session_cookie(token, SESSION_TTL_SECONDS))],
+        )
+
+    def _handle_auth_logout(self):
+        token = self._get_session_token()
+        _clear_session(token)
+        self._send_json(
+            200,
+            _json_ok(auth_required=True, authenticated=False),
+            extra_headers=[("Set-Cookie", _build_session_cookie("", 0))],
+        )
+
     def do_GET(self):
         parsed = urlparse(self.path)
         tif_prefix = None
@@ -316,14 +426,30 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         elif parsed.path.startswith("/vs/TIF/"):
             tif_prefix = "/vs/TIF/"
 
-        if parsed.path == "/api/admin/auth-status":
-            self._send_json(200, _json_ok(auth_required=bool(ADMIN_PASSWORD)))
+        if parsed.path in ("/login.html", "/login") and self._is_admin_authenticated():
+            self._send_redirect("admin.html")
+            return
+
+        if parsed.path in ("/admin.html", "/admin") and not self._is_admin_authenticated():
+            self._send_redirect("login.html?next=admin.html")
+            return
+
+        if parsed.path in ("/api/auth/status", "/api/admin/auth-status"):
+            self._handle_auth_status()
             return
 
         if parsed.path == "/api/admin/health":
             if not self._require_admin_auth():
                 return
-            self._send_json(200, _json_ok(status="ok", config_dir=str(CONFIG_DIR), backup_dir=str(BACKUP_DIR), available_configs=sorted(CONFIG_PATHS.keys()), server_time=datetime.now().isoformat(timespec="seconds")))
+            self._send_json(200, _json_ok(
+                status="ok",
+                config_dir=str(CONFIG_DIR),
+                backup_dir=str(BACKUP_DIR),
+                available_configs=sorted(CONFIG_PATHS.keys()),
+                server_time=datetime.now().isoformat(timespec="seconds"),
+                password_source=ADMIN_PASSWORD_SOURCE,
+                using_default_password=ADMIN_PASSWORD_SOURCE == "default",
+            ))
             return
 
         config_name = self._config_name_from_path(parsed.path)
@@ -390,24 +516,13 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
     def do_POST(self):
         parsed = urlparse(self.path)
-        if parsed.path == "/api/admin/login":
-            self._handle_admin_login()
+        if parsed.path in ("/api/auth/login", "/api/admin/login"):
+            self._handle_auth_login()
+            return
+        if parsed.path == "/api/auth/logout":
+            self._handle_auth_logout()
             return
         self._handle_config_write()
-
-    def _handle_admin_login(self):
-        if not ADMIN_PASSWORD:
-            self._send_json(200, _json_ok(auth_required=False, authenticated=True))
-            return
-        try:
-            payload = self._load_request_json()
-        except ValueError as exc:
-            self._send_json(400, _json_error(str(exc)))
-            return
-        if payload.get("password") != ADMIN_PASSWORD:
-            self._send_json(401, {"ok": False, "error": "Incorrect admin password.", "auth_required": True})
-            return
-        self._send_json(200, _json_ok(auth_required=True, authenticated=True))
 
     def _handle_config_write(self):
         parsed = urlparse(self.path)
@@ -437,6 +552,9 @@ class ReusableTCPServer(socketserver.ThreadingTCPServer):
 
 with ReusableTCPServer(("", PORT), Handler) as httpd:
     print(f"Serving {ROOT} on http://localhost:{PORT}")
+    print(f"Admin login password source: {ADMIN_PASSWORD_SOURCE}")
+    if ADMIN_PASSWORD_SOURCE == "default":
+        print(f"Using default local admin password: {DEFAULT_ADMIN_PASSWORD}")
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:

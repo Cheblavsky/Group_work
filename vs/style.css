@@ -270,3 +270,15 @@ html[dir="rtl"] .layer-catalog-item {
   padding: 0;
 }
 
+.auth-page-shell {
+  align-items: center;
+}
+
+.auth-card {
+  width: min(100%, 420px);
+  justify-self: center;
+}
+
+.auth-actions {
+  align-items: center;
+}

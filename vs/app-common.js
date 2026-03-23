@@ -1,13 +1,24 @@
 ﻿(function () {
   const I18N = window.EnvDashI18n;
   const LOCALES = ["en", "zh", "hu", "ku"];
-  const ADMIN_PASSWORD_KEY = "env-dashboard-admin-password";
 
   const locationPath = window.location.pathname;
   const locationBase = locationPath.endsWith("/")
     ? locationPath
     : locationPath.slice(0, locationPath.lastIndexOf("/") + 1);
   const BASE_CANDIDATES = [locationBase, "", "vs/", "./vs/", "../vs/"];
+
+  function buildAppUrl(relativePath, queryParams) {
+    const url = new URL(relativePath, window.location.href);
+    if (queryParams && typeof queryParams === "object") {
+      Object.entries(queryParams).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") {
+          url.searchParams.set(key, value);
+        }
+      });
+    }
+    return url.toString();
+  }
 
   const baseLayerConfigs = [
     {
@@ -230,29 +241,7 @@
     return container.querySelector(`#${options.metaId}`);
   }
 
-  function getAdminPassword() {
-    try {
-      return window.sessionStorage.getItem(ADMIN_PASSWORD_KEY) || "";
-    } catch (error) {
-      return "";
-    }
-  }
 
-  function setAdminPassword(password) {
-    try {
-      if (password) window.sessionStorage.setItem(ADMIN_PASSWORD_KEY, password);
-      else window.sessionStorage.removeItem(ADMIN_PASSWORD_KEY);
-    } catch (error) {
-      // Ignore storage errors.
-    }
-  }
-
-  function buildAdminHeaders(headers) {
-    const merged = { ...(headers || {}) };
-    const password = getAdminPassword();
-    if (password) merged["X-Admin-Password"] = password;
-    return merged;
-  }
 
   async function buildHttpError(response) {
     const data = await response.json().catch(() => ({}));
@@ -289,7 +278,7 @@
 
   async function loadConfig(name) {
     try {
-      const response = await fetch(`/api/config/${name}`, { cache: "no-store", headers: buildAdminHeaders() });
+      const response = await fetch(`/api/config/${name}`, { cache: "no-store" });
       if (!response.ok) throw await buildHttpError(response);
       return { data: await response.json(), usedFallback: false, error: null };
     } catch (error) {
@@ -302,7 +291,7 @@
   async function saveConfig(name, payload, method = "PUT") {
     const response = await fetch(`/api/config/${name}`, {
       method,
-      headers: buildAdminHeaders({ "Content-Type": "application/json" }),
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
     const data = await response.json().catch(() => ({}));
@@ -316,19 +305,19 @@
   }
 
   async function fetchAdminHealth() {
-    const response = await fetch("/api/admin/health", { cache: "no-store", headers: buildAdminHeaders() });
+    const response = await fetch("/api/admin/health", { cache: "no-store" });
     if (!response.ok) throw await buildHttpError(response);
     return response.json();
   }
 
   async function fetchAdminAuthStatus() {
-    const response = await fetch("/api/admin/auth-status", { cache: "no-store" });
+    const response = await fetch("/api/auth/status", { cache: "no-store" });
     if (!response.ok) throw await buildHttpError(response);
     return response.json();
   }
 
   async function loginAdmin(password) {
-    const response = await fetch("/api/admin/login", {
+    const response = await fetch("/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ password }),
@@ -340,12 +329,22 @@
       error.payload = data;
       throw error;
     }
-    setAdminPassword(password);
     return data;
   }
 
-  function logoutAdmin() {
-    setAdminPassword("");
+  async function logoutAdmin() {
+    const response = await fetch("/api/auth/logout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      const error = new Error(data.error || `HTTP ${response.status}`);
+      error.status = response.status;
+      error.payload = data;
+      throw error;
+    }
+    return data;
   }
 
   function extractSection(markdown, heading) {
@@ -480,6 +479,7 @@
   window.EnvDashCommon = {
     LOCALES,
     renderHeader,
+    buildAppUrl,
     fetchWithBases,
     fetchText,
     resolveUrl,
@@ -502,8 +502,8 @@
     getBaseLayerConfigs: () => clone(baseLayerConfigs),
     getDefaultConfig,
     getLanguageLabel,
-    hasAdminPassword: () => Boolean(getAdminPassword()),
   };
 }());
+
 
 

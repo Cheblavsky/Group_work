@@ -1,4 +1,4 @@
-(function () {
+﻿(function () {
   const I18N = window.EnvDashI18n;
   const Common = window.EnvDashCommon;
   const LOCALES = Common.LOCALES;
@@ -13,8 +13,10 @@
     selectedDataset: 0,
     selectedLayer: 0,
     auth: {
-      required: false,
+      required: true,
       unlocked: false,
+      passwordSource: "default",
+      usingDefaultPassword: true,
     },
   };
 
@@ -25,10 +27,6 @@
   const adminEditorLanguageValue = document.getElementById("admin-editor-language-value");
   const adminAuthNote = document.getElementById("admin-auth-note");
   const adminLogoutButton = document.getElementById("admin-logout");
-  const authPanel = document.getElementById("admin-auth-panel");
-  const authForm = document.getElementById("admin-login-form");
-  const authPassword = document.getElementById("admin-password");
-  const authStatus = document.getElementById("admin-auth-status");
   const adminContent = document.getElementById("admin-content");
   const healthContainer = document.getElementById("admin-health");
   const overviewText = document.getElementById("admin-overview-text");
@@ -89,33 +87,32 @@
   function datasetAt(index) { return state.datasets.datasets[index] || null; }
   function layerAt(index) { return state.layerCatalog.layers[index] || null; }
 
+  function getLoginUrl() {
+    return Common.buildAppUrl("login.html", { next: "admin.html" });
+  }
+
+  function redirectToLogin() {
+    window.location.replace(getLoginUrl());
+  }
+
   function updateToolbar() {
     adminEditorLanguageValue.textContent = getActiveLocaleLabel();
-    adminAuthNote.textContent = I18N.t(state.auth.required ? "admin.authEnabledNotice" : "admin.authDisabledNotice");
-    adminLogoutButton.classList.toggle("hidden", !state.auth.required);
+    adminAuthNote.textContent = I18N.t("admin.authEnabledNotice");
   }
 
-  function updateAccessUi() {
-    const unlocked = !state.auth.required || state.auth.unlocked;
-    adminToolbar.classList.toggle("hidden", !unlocked);
-    adminContent.classList.toggle("hidden", !unlocked);
-    authPanel.classList.toggle("hidden", unlocked);
-    updateToolbar();
-  }
-
-  function handleAuthFailure() {
-    Common.logoutAdmin();
+  async function handleAuthFailure() {
+    try {
+      await Common.logoutAdmin();
+    } catch (error) {
+      // Ignore logout cleanup failures when the session is already gone.
+    }
     state.auth.unlocked = false;
-    updateAccessUi();
-    setStatus(authStatus, "error", I18N.t("admin.loginRequired"));
+    redirectToLogin();
   }
 
   function renderOverview() {
     overviewText.textContent = Common.getAppContentValue(state.app, "admin", "overview");
-    const notice = Common.getAppContentValue(state.app, "admin", "notice");
-    noticeText.textContent = state.auth.required
-      ? `${notice} ${I18N.t("admin.authEnabledNotice")}`.trim()
-      : notice;
+    noticeText.textContent = I18N.t("admin.authEnabledNotice");
     if (!state.health) {
       healthContainer.innerHTML = `<div class="empty-state">${I18N.t("messages.loadingFailed")}</div>`;
       return;
@@ -367,7 +364,7 @@
     const authFailure = [healthResult, monitoringResult, datasetResult, appResult, layerResult]
       .find((result) => result.status === "rejected" && result.reason && result.reason.status === 401);
     if (authFailure) {
-      handleAuthFailure();
+      await handleAuthFailure();
       return;
     }
     state.health = healthResult.status === "fulfilled" ? healthResult.value : null;
@@ -397,7 +394,7 @@
       }
     } catch (error) {
       if (error && error.status === 401) {
-        handleAuthFailure();
+        await handleAuthFailure();
         return;
       }
       setStatus(statusElement, "error", `${I18N.t("messages.loadingFailed")} ${error.message}`);
@@ -471,8 +468,8 @@
       setStatus(pointsStatus, "success", I18N.t("messages.saveSuccess"));
     } catch (error) {
       if (error && error.status === 401) {
-        handleAuthFailure();
         setStatus(pointsStatus, "error", I18N.t("admin.loginRequired"));
+        await handleAuthFailure();
         return;
       }
       setStatus(pointsStatus, "error", `${I18N.t("messages.saveError")} ${error.message}`);
@@ -486,8 +483,8 @@
       setStatus(datasetsStatus, "success", I18N.t("messages.saveSuccess"));
     } catch (error) {
       if (error && error.status === 401) {
-        handleAuthFailure();
         setStatus(datasetsStatus, "error", I18N.t("admin.loginRequired"));
+        await handleAuthFailure();
         return;
       }
       setStatus(datasetsStatus, "error", `${I18N.t("messages.saveError")} ${error.message}`);
@@ -502,8 +499,8 @@
       renderOverview();
     } catch (error) {
       if (error && error.status === 401) {
-        handleAuthFailure();
         setStatus(appStatus, "error", I18N.t("admin.loginRequired"));
+        await handleAuthFailure();
         return;
       }
       setStatus(appStatus, "error", `${I18N.t("messages.saveError")} ${error.message}`);
@@ -518,33 +515,20 @@
       renderLayerList();
     } catch (error) {
       if (error && error.status === 401) {
-        handleAuthFailure();
         setStatus(layersStatus, "error", I18N.t("admin.loginRequired"));
+        await handleAuthFailure();
         return;
       }
       setStatus(layersStatus, "error", `${I18N.t("messages.saveError")} ${error.message}`);
     }
   });
 
-  authForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
+  adminLogoutButton.addEventListener("click", async () => {
     try {
-      setStatus(authStatus, "", I18N.t("messages.saving"));
-      await Common.loginAdmin(authPassword.value);
-      state.auth.unlocked = true;
-      updateAccessUi();
-      setStatus(authStatus, "success", I18N.t("admin.loginSuccess"));
-      await loadAll();
-    } catch (error) {
-      setStatus(authStatus, "error", error.message || I18N.t("admin.loginRequired"));
+      await Common.logoutAdmin();
+    } finally {
+      redirectToLogin();
     }
-  });
-
-  adminLogoutButton.addEventListener("click", () => {
-    Common.logoutAdmin();
-    state.auth.unlocked = false;
-    updateAccessUi();
-    setStatus(authStatus, "", "");
   });
 
   I18N.onChange(() => {
@@ -558,19 +542,24 @@
   });
 
   async function init() {
+    adminToolbar.classList.remove("hidden");
+    adminContent.classList.remove("hidden");
     updateToolbar();
     try {
       const authConfig = await Common.fetchAdminAuthStatus();
       state.auth.required = Boolean(authConfig.auth_required);
-      state.auth.unlocked = !state.auth.required || Common.hasAdminPassword();
+      state.auth.unlocked = Boolean(authConfig.authenticated);
+      state.auth.passwordSource = authConfig.password_source || "default";
+      state.auth.usingDefaultPassword = Boolean(authConfig.using_default_password);
     } catch (error) {
-      state.auth.required = false;
-      state.auth.unlocked = true;
+      redirectToLogin();
+      return;
     }
-    updateAccessUi();
-    if (!state.auth.required || state.auth.unlocked) {
-      await loadAll();
+    if (!state.auth.unlocked) {
+      redirectToLogin();
+      return;
     }
+    await loadAll();
   }
 
   init();
