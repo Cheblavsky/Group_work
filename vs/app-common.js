@@ -212,7 +212,7 @@
         <div class="header-meta" id="${options.metaId || ""}"></div>
         <label class="language-switcher">
           <span data-i18n="common.language"></span>
-          <select id="language-select" aria-label="Language selector"></select>
+          <select id="language-select" class="language-select" aria-label="Language selector"></select>
         </label>
       </div>
     `;
